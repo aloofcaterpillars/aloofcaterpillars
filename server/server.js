@@ -1,7 +1,5 @@
-// add this after server.config is ready
+
 var app = require('./server-config.js');
-// var express = require('express');
-// var app = express();
 
 var port = process.env.PORT || 5000;
 
