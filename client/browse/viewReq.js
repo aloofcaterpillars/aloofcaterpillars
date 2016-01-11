@@ -11,5 +11,4 @@ angular.module('viewReq', [])
     $scope.pending = data  
   })
 
-
 })

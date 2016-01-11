@@ -91,9 +91,7 @@ module.exports = {
         //res.redirect('/browse');
         res.json({token: token});
       }); 
-
   }
-
 };
 
 

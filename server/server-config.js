@@ -63,17 +63,17 @@ app.get('/api/browse', MealController.allMeals)
 // //////////////new routes//////////////////////////////////
 // // app.put('/api/makerequest', MealController.makeRequest);
 
+
 // // app.put('/api/confirmrequest', MealController.confirmrequest);
 
 // app.get('/api/viewpending', UserController.viewRequest);
 
 // app.get('/api/viewuser',MealController.viewRequest);
-
-
 // // //////////////////////////////////////////////////////
 
 // // this endpoint returns all the meals objects form the db. TODO check with Jonathon to sync endpoint name 
 // app.get('/api/browse', MealController.allMeals);
+
 
 // // this endpoint puts a meal to the db
 app.post('/api/create', checkUser, MealController.create);
