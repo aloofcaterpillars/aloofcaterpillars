@@ -49,32 +49,27 @@ module.exports = {
       });
   },
 
+  //CURRENTLY WORKING PERFECTLY
   //given an object containing a user (the prospective consumer) and the meal being requested) 
   makeRequest: function(req, res, next) {
     //find the prospective meal according to the title of the meal instance provided
-    var description = req.body.meal.description
-    var consumer = req.body.username
-    console.log('description is', description, 'username is ', consumer)
-
-    findMeal({description: description})
-      .then(function(meal) {        
-        console.log('found meal is', meal)
+    findMeal({title: req.body.meal.title})
+      .then(function(meal) {   
+        // console.log(req.body.meal);  
+        console.log(meal);   
         //update the meal status
         meal.status = 'pending';
         //add the consumer (username from the user instance input) to the meal's consumer array
-        meal.consumers.push(consumer);
-        return meal
-      })
-      .then(function(changed) {
-        console.log('we changed', changed)
-        changed.save(function(err, saved) {
-          if (err) { 
-            next(err)
-          } else {
-            res.json(saved)
-          }
-        })
-
+        meal.consumers.push(req.body.user.username);
+        //after updating the meal, it also needs to be saved/updated in the database
+        meal.save(function(err){
+            if (!err){
+                console.log("updated!");
+            } else {
+                console.log(err);
+            }
+        });
+        res.send(201, meal); 
       })
       .fail(function(error) {
         next(error);
@@ -90,6 +85,16 @@ module.exports = {
         meal.status = 'sold';
         //clear consumers array
         meal.consumers = [];
+        //add final consumer back to the consumers array
+        meal.consumers.push(req.body.meal2.creator);
+        meal.save(function(err){
+            if (!err){
+                console.log("updated meal1!");
+                console.log(meal);
+            } else {
+                console.log(err);
+            }
+        });
       })
       .fail(function(error) {
         next(error);
@@ -100,20 +105,34 @@ module.exports = {
         meal.status = 'sold';
         //clear consumers array
         meal.consumers = [];
+        //add final consumer back to the consumers array
+        meal.consumers.push(req.body.meal1.creator);
+        //save the updates in the database
+        meal.save(function(err){
+            if (!err){
+                console.log("updated meal2!");
+                console.log(meal);
+            } else {
+                console.log(err);
+            }
+        });
+        res.send(201, 'both updated to sold');
       })
       .fail(function(error) {
         next(error);
       });
-  }, 
+  },  
 
+  //right now this works and gets here successfully. However, because it's a get request, req.body is going to be
+  //and empty object (confirmed via test on postman). 
   viewPending: function(req, res, next) {
     //this is where the user can view all of their foods that have a pending status. query database for 
     //meals with pending status for this user
-    console.log('req is ', req)
-    findAllMeals({creator: 'Bob', status: 'pending'})
+    findAllMeals({creator: req.body.username, status: 'pending'})
       .then(function(meals) {
         //send back the meals in json
-        res.json(200, meals);
+        console.log(req.body);
+        res.json(200, 'worked');
       })
       .fail(function(error) {
         next(error);
@@ -136,10 +155,10 @@ module.exports = {
   //view the consumers of a meal instance
   viewUsers: function(req, res, next) {
     //given a meal instance, find it in the database
-    findMeal({title: title})
+    findMeal({title: req.body.title})
       .then(function(meal) {
         //send back that meal's consumers array in JSON format
-        res.json(200, meal.consumers); 
+        res.json(200, 'got here wooo'); 
       })
       .fail(function(error) {
         next(error);
