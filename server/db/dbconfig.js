@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 var Q = require('q'); 
 //create mongoose database connection with name database
-mongoose.connect('mongodb://localhost/greenfield');
+
+var connectionPath = process.env.MONGOLAB_URI || 'mongodb://localhost/'; 
+mongoose.connect(connectionPath + 'greenfield');
 
 //save connection in variable db
 var db = mongoose.connection;
